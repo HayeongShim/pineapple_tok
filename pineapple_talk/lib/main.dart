@@ -24,11 +24,9 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
           ),
-          home: MyHomePage(),
+          home: LoginPage(),
         ),
-
       ),
-
     );
   }
 }
@@ -41,10 +39,9 @@ class MyAppState extends ChangeNotifier {
 FocusNode textFocusId = FocusNode();
 FocusNode textFocusPw = FocusNode();
 
-class MyHomePage extends StatelessWidget {
+class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -87,6 +84,11 @@ class MyHomePage extends StatelessWidget {
                   onPressed: () {
                     textFocusId.unfocus();
                     textFocusPw.unfocus();
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => FriendsPage()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -94,11 +96,24 @@ class MyHomePage extends StatelessWidget {
                     ),
                     minimumSize: Size(410, 50),
                   ),
-                  child: Text("LOGIN"),
+                  child: Text("LOGIN"), 
                 ),
               ],
             )
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class FriendsPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        child: Text(
+          'Friends Page'
         ),
       ),
     );
