@@ -1,16 +1,14 @@
 {
-  "account_list": [
+  "friends_list": [
     {
       "id": "starjin123@naver.com",
       "idx": "0",
-      "pw": "asdf1234",
-      "name": "김진태"
+      "friends": ["1", "2", "3", "4", "5", "6", "7"]
     },
     {
       "id": "kwonbwonkwon@naver.com",
       "idx": "1",
-      "pw": "kkkk1234",
-      "name": "권본권"
+      "friends": ["0", "2", "6", "7"]
     }
   ]
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pineapple_talk/login_page.dart';
-import 'package:pineapple_talk/friends_page.dart';
+//import 'package:pineapple_talk/friends_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -15,8 +15,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
-      //home: LoginPage(),
-      home: FriendsPage(),
+      home: LoginPage(),
+      //home: FriendsPage(),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:pineapple_talk/friends_page.dart';
+import 'package:pineapple_talk/account.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -55,8 +56,7 @@ class LoginForm extends StatefulWidget {
 class LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
   List _accounts = [];
-  String username = '';
-  String userpw = '';
+  Account myAccount = Account();
 
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/json/account_list.json');
@@ -76,7 +76,9 @@ class LoginFormState extends State<LoginForm> {
 
   bool _login() {
     for (var account in _accounts){
-      if (account['id'] == username && account['pw'] == userpw){
+      if (account['id'] == myAccount.id && account['pw'] == myAccount.pw){
+        myAccount.name = account['name'];
+        myAccount.idx = account['idx'];
         return true;
       }
     }
@@ -105,7 +107,7 @@ class LoginFormState extends State<LoginForm> {
                   return null;
                 },
                 onSaved: (value){
-                  username = value!;
+                  myAccount.id = value!;
                 },
                 decoration: InputDecoration(
                   filled: false,
@@ -122,7 +124,7 @@ class LoginFormState extends State<LoginForm> {
                   return null;
                 },
                 onSaved: (value){
-                  userpw = value!;
+                  myAccount.pw = value!;
                 },
                 decoration: InputDecoration(
                   filled: false,
@@ -143,7 +145,7 @@ class LoginFormState extends State<LoginForm> {
                   if (!_login()) return;
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FriendsPage()),
+                    MaterialPageRoute(builder: (context) => FriendsPage(myAccount)),
                   );
                 },
                 style: ElevatedButton.styleFrom(
