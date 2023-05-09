@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pineapple_talk/bottom_navigator.dart';
 import 'package:pineapple_talk/account.dart';
@@ -22,6 +21,7 @@ class FriendsPage extends StatelessWidget {
             fontSize: 25,
           )
         ),
+        automaticallyImplyLeading: false,
         centerTitle: false,
       ),
       body: Padding(
@@ -29,8 +29,6 @@ class FriendsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //buildMyProfile(myAccount),
-            //Divider(thickness: 1, height: 20),
             Expanded(
               child: FriendsList(myAccount,),
             ),
@@ -51,7 +49,6 @@ class FriendsList extends StatefulWidget {
 }
 
 class FriendsListState extends State<FriendsList> {
-  List _friendsList = [];
   List<Profile> _profileList = [];
 
   @override
@@ -61,8 +58,11 @@ class FriendsListState extends State<FriendsList> {
   }
 
   void _readJson() async {
-    await _readFriendsListJson();
-    await _readProfileListJson();
+    String myIdx = widget.myAccount.idx;
+    List friendsList = await _readFriendsListJson(myIdx);
+    friendsList.insert(0, myIdx);
+    await _readProfileListJson(friendsList);
+    print(friendsList);
     
     List<Profile> tempList = _profileList.sublist(1);
     tempList.sort((a, b) => a.name.compareTo(b.name)); // 오름차순 정렬
@@ -72,23 +72,23 @@ class FriendsListState extends State<FriendsList> {
     setState(() {});
   }
 
-  Future<void> _readFriendsListJson() async {
+  Future<List> _readFriendsListJson(String myIdx) async {
     final String response = await rootBundle.loadString('assets/json/friends_list.json');
     final data = await json.decode(response);
+    List friendsList = [];
     for (var list in data["friends_list"]){
-      if (widget.myAccount.id == list['id']){
-        _friendsList = list['friends'];
+      if (myIdx == list['idx']){
+        friendsList = list['friends'];
         break;
       }
     }
-    _friendsList.insert(0, widget.myAccount.idx);
-    print(_friendsList);
+    return friendsList;
   }
 
-  Future<void> _readProfileListJson() async {
+  Future<void> _readProfileListJson(List friendsList) async {
     final String response = await rootBundle.loadString('assets/json/profile_list.json');
     final data = await json.decode(response);
-    for (var list in _friendsList){
+    for (var list in friendsList){
       for (var l in data["profile_list"]){
         if (list == l['id']){
           _profileList.add(Profile(l['id'], l['name'], l['photo']));
@@ -104,18 +104,17 @@ class FriendsListState extends State<FriendsList> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // my profile
-          //_buildProfile(_profileList[0].photo, _profileList[0].name, 35), // TBD - null check
+          if (_profileList.isNotEmpty)
+            _buildProfile(_profileList.first.photo, _profileList.first.name, 35), // TBD - null check
           Divider(thickness: 1, height: 20),
           Text(
-            '     친구 ${_profileList.length}',
+            '     친구 ${_profileList.length - 1}',
             style: TextStyle(fontSize: 15, color: Colors.black, height: 1.0,),
             textAlign: TextAlign.left,
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: _profileList.length,
-              itemBuilder: _buildProfiles,
+            child: ListView(
+              children: _buildFriendsProfile(context),
             ),
           ),
         ],
@@ -123,14 +122,19 @@ class FriendsListState extends State<FriendsList> {
     );
   }
 
-  Widget _buildProfiles(BuildContext ctxt, int idx){
-    if (_profileList[idx].photo == '')
-    {
-      return _buildProfile('assets/images/Logo.png', _profileList[idx].name);
+  List<Widget> _buildFriendsProfile(BuildContext context){
+    if (_profileList.isNotEmpty) {
+      return List.generate(_profileList.length - 1, (index) {
+        if (_profileList[index + 1].photo == '') {
+          return _buildProfile('assets/images/Logo.png', _profileList[index + 1].name);
+        }
+        else {
+          return _buildProfile(_profileList[index + 1].photo, _profileList[index + 1].name);
+        }
+      });
     }
-    else
-    {
-      return _buildProfile(_profileList[idx].photo, _profileList[idx].name);
+    else {
+      return [ CircularProgressIndicator() ];
     }
   }
 
