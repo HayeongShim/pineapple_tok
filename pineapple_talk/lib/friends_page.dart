@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pineapple_talk/bottom_navigator.dart';
 import 'package:pineapple_talk/account.dart';
-import 'package:flutter/services.dart';
 import 'package:pineapple_talk/profile.dart';
+import 'package:pineapple_talk/profile_page.dart';
+import 'package:pineapple_talk/bottom_navigator.dart';
+import 'package:flutter/services.dart';
 import 'dart:convert';
 
 class FriendsPage extends StatelessWidget {
@@ -140,6 +141,11 @@ class FriendsListState extends State<FriendsList> {
 
   Widget _buildProfile(String path, String name, [double radius = 25]){
     return ListTile(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => ProfilePage())
+        );
+      },
       leading: CircleAvatar(
           backgroundImage: AssetImage(path),
           radius: radius,
