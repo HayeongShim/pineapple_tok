@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pineapple_talk/profile.dart';
 
 class ProfilePage extends StatelessWidget {
+  Profile profile = Profile('', '', '');
+  ProfilePage(this.profile, {Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +35,11 @@ class ProfilePage extends StatelessWidget {
                 width: 150,
                 height: 150,
                 decoration: BoxDecoration(
-                  color: Colors.yellow,
+                  color: Colors.green.shade100,
+                  image: DecorationImage(
+                    image: profile.photo == '' ?
+                      AssetImage('assets/images/Logo.png') : AssetImage(profile.photo),
+                    ),
                   shape: BoxShape.circle,
                 ),
               ),

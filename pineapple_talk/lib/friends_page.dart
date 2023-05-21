@@ -106,7 +106,7 @@ class FriendsListState extends State<FriendsList> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (_profileList.isNotEmpty)
-            _buildProfile(_profileList.first.photo, _profileList.first.name, 35), // TBD - null check
+            _buildProfile(_profileList.first, 35), // TBD - null check
           Divider(thickness: 1, height: 20),
           Text(
             '     친구 ${_profileList.length - 1}',
@@ -126,12 +126,7 @@ class FriendsListState extends State<FriendsList> {
   List<Widget> _buildFriendsProfile(BuildContext context){
     if (_profileList.isNotEmpty) {
       return List.generate(_profileList.length - 1, (index) {
-        if (_profileList[index + 1].photo == '') {
-          return _buildProfile('assets/images/Logo.png', _profileList[index + 1].name);
-        }
-        else {
-          return _buildProfile(_profileList[index + 1].photo, _profileList[index + 1].name);
-        }
+        return _buildProfile(_profileList[index + 1]);
       });
     }
     else {
@@ -139,18 +134,19 @@ class FriendsListState extends State<FriendsList> {
     }
   }
 
-  Widget _buildProfile(String path, String name, [double radius = 25]){
+  Widget _buildProfile(Profile profile, [double radius = 25]){
     return ListTile(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => ProfilePage())
+          builder: (context) => ProfilePage(profile))
         );
       },
       leading: CircleAvatar(
-          backgroundImage: AssetImage(path),
+          backgroundImage: profile.photo == '' ?
+            AssetImage('assets/images/Logo.png') : AssetImage(profile.photo),
           radius: radius,
       ),
-      title: Text(name),
+      title: Text(profile.name),
       visualDensity: VisualDensity(vertical: 1.0),
     );
   }
