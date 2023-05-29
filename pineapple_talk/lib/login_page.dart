@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
-import 'package:pineapple_talk/friends_page.dart';
+import 'package:pineapple_talk/main_page.dart';
 import 'package:pineapple_talk/account.dart';
 
 class LoginPage extends StatelessWidget {
@@ -145,7 +145,7 @@ class LoginFormState extends State<LoginForm> {
                   if (!_login()) return;
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FriendsPage(myAccount)),
+                    MaterialPageRoute(builder: (context) => MainPage(myAccount,)),
                   );
                 },
                 style: ElevatedButton.styleFrom(

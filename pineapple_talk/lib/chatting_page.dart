@@ -5,16 +5,16 @@ import 'package:pineapple_talk/profile_page.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 
-class FriendsPage extends StatelessWidget {
+class ChattingPage extends StatelessWidget {
   Account myAccount = Account();
-  FriendsPage(this.myAccount, {Key? key}) : super(key: key);
+  ChattingPage(this.myAccount, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '친구',
+          '채팅',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 25,
@@ -29,7 +29,7 @@ class FriendsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: FriendsList(myAccount,),
+              child: ChattingList(myAccount,),
             ),
           ],
         ),
@@ -39,15 +39,15 @@ class FriendsPage extends StatelessWidget {
   }
 }
 
-class FriendsList extends StatefulWidget {
-  FriendsList(this.myAccount, {Key? key}) : super(key: key);
+class ChattingList extends StatefulWidget {
+  ChattingList(this.myAccount, {Key? key}) : super(key: key);
   Account myAccount = Account();
 
   @override
-  FriendsListState createState() => FriendsListState();
+  ChattingListState createState() => ChattingListState();
 }
 
-class FriendsListState extends State<FriendsList> {
+class ChattingListState extends State<ChattingList> {
   List<Profile> _profileList = [];
 
   @override
@@ -105,14 +105,6 @@ class FriendsListState extends State<FriendsList> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (_profileList.isNotEmpty)
-            _buildProfile(_profileList.first, 35), // TBD - null check
-          Divider(thickness: 1, height: 20),
-          Text(
-            '     친구 ${_profileList.length - 1}',
-            style: TextStyle(fontSize: 15, color: Colors.black, height: 1.0,),
-            textAlign: TextAlign.left,
-          ),
           Expanded(
             child: ListView(
               children: _buildFriendsProfile(context),
