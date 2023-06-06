@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pineapple_talk/account.dart';
-import 'package:pineapple_talk/profile.dart';
-import 'package:pineapple_talk/profile_page.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 
@@ -34,7 +32,6 @@ class ChattingPage extends StatelessWidget {
           ],
         ),
       ),
-      //bottomNavigationBar: BottomNavigator(myAccount),
     );
   }
 }
@@ -47,8 +44,18 @@ class ChattingList extends StatefulWidget {
   ChattingListState createState() => ChattingListState();
 }
 
+class ChattingListInfo {
+  int id = -1;
+  String title = '';
+  String latestChat = '';
+  String latestChatTime = '';
+  var participants = [];
+
+  ChattingListInfo(this.id, this.title, this.latestChat, this.latestChatTime, this.participants);
+}
+
 class ChattingListState extends State<ChattingList> {
-  List<Profile> _profileList = [];
+  List<ChattingListInfo> _chattingListInfo = [];
 
   @override
   void initState() {
@@ -58,45 +65,35 @@ class ChattingListState extends State<ChattingList> {
 
   void _readJson() async {
     String myIdx = widget.myAccount.idx;
-    List friendsList = await _readFriendsListJson(myIdx);
-    friendsList.insert(0, myIdx);
-    await _readProfileListJson(friendsList);
-    print(friendsList);
+    _chattingListInfo = await _readChattingListInfoJson(myIdx);
     
-    if (_profileList.length > 1) {
+    /*if (_profileList.length > 1) {
       List<Profile> tempList = _profileList.sublist(1);
       tempList.sort((a, b) => a.name.compareTo(b.name)); // 오름차순 정렬
       _profileList = _profileList.sublist(0, 1); // TBD - range check
       _profileList.addAll(tempList);
-    }
+    }*/
 
     setState(() {});
   }
 
-  Future<List> _readFriendsListJson(String myIdx) async {
-    final String response = await rootBundle.loadString('assets/json/friends_list.json');
+  Future<List<ChattingListInfo>> _readChattingListInfoJson(String myIdx) async {
+    final String response = await rootBundle.loadString('assets/json/chatting_list.json');
     final data = await json.decode(response);
-    List friendsList = [];
-    for (var list in data["friends_list"]){
-      if (myIdx == list['idx']){
-        friendsList = list['friends'];
-        break;
-      }
-    }
-    return friendsList;
-  }
+    List<ChattingListInfo> chattingListInfo = [];
 
-  Future<void> _readProfileListJson(List friendsList) async {
-    final String response = await rootBundle.loadString('assets/json/profile_list.json');
-    final data = await json.decode(response);
-    for (var list in friendsList){
-      for (var l in data["profile_list"]){
-        if (list == l['id']){
-          _profileList.add(Profile(l['id'], l['name'], l['photo']));
-          break;
-        }
+    for (var list in data["chatting_list"]) {
+      if (list['participants'].contains(myIdx)) {
+        chattingListInfo.add(ChattingListInfo(
+          list['id'],
+          list['title'],
+          list['latest_chat'],
+          list['latest_chat_time'],
+          list['participants'])
+        );
       }
     }
+    return chattingListInfo;
   }
 
   @override
@@ -107,7 +104,7 @@ class ChattingListState extends State<ChattingList> {
         children: [
           Expanded(
             child: ListView(
-              children: _buildFriendsProfile(context),
+              children: _buildChattingList(context),
             ),
           ),
         ],
@@ -115,10 +112,10 @@ class ChattingListState extends State<ChattingList> {
     );
   }
 
-  List<Widget> _buildFriendsProfile(BuildContext context){
-    if (_profileList.isNotEmpty) {
-      return List.generate(_profileList.length - 1, (index) {
-        return _buildProfile(_profileList[index + 1]);
+  List<Widget> _buildChattingList(BuildContext context){
+    if (_chattingListInfo.isNotEmpty) {
+      return List.generate(_chattingListInfo.length, (index) {
+        return _buildProfile(_chattingListInfo[index]);
       });
     }
     else {
@@ -126,19 +123,18 @@ class ChattingListState extends State<ChattingList> {
     }
   }
 
-  Widget _buildProfile(Profile profile, [double radius = 25]){
+  Widget _buildProfile(ChattingListInfo chattingListInfo, [double radius = 25]){
     return ListTile(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) => ProfilePage(profile))
-        );
+        //Navigator.push(context, MaterialPageRoute(
+        //  builder: (context) => ProfilePage(profile))
+        //);
       },
       leading: CircleAvatar(
-          backgroundImage: profile.photo == '' ?
-            AssetImage('assets/images/Logo.png') : AssetImage(profile.photo),
-          radius: radius,
+        backgroundImage: AssetImage('assets/images/Logo.png'),
+        radius: radius,
       ),
-      title: Text(profile.name),
+      title: Text(chattingListInfo.title),
       visualDensity: VisualDensity(vertical: 1.0),
     );
   }

@@ -1,0 +1,18 @@
+{
+  "chatting_list": [
+    {
+      "id": 0,
+      "title": "ILC1014",
+      "latest_chat": "ㄱㄱ",
+      "latest_chat_time": "20230606 10:10pm",
+      "participants": ["0", "1", "2", "3"]
+    },
+    {
+      "id": 1,
+      "title": "얼짱10조 in SAMSUNG",
+      "latest_chat": "내려감다",
+      "latest_chat_time": "20230531 10:16am",
+      "participants": ["0", "1", "4"]
+    }
+  ]
+}

@@ -34,7 +34,6 @@ class FriendsPage extends StatelessWidget {
           ],
         ),
       ),
-      //bottomNavigationBar: BottomNavigator(myAccount),
     );
   }
 }
