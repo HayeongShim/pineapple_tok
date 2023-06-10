@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pineapple_talk/account.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 class ChattingPage extends StatelessWidget {
   Account myAccount = Account();
@@ -115,6 +116,7 @@ class ChattingListState extends State<ChattingList> {
   List<Widget> _buildChattingList(BuildContext context){
     if (_chattingListInfo.isNotEmpty) {
       return List.generate(_chattingListInfo.length, (index) {
+        _chattingListInfo.sort((a, b) => b.latestChatTime.compareTo(a.latestChatTime));
         return _buildProfile(_chattingListInfo[index]);
       });
     }
@@ -135,7 +137,29 @@ class ChattingListState extends State<ChattingList> {
         radius: radius,
       ),
       title: Text(chattingListInfo.title),
+      subtitle: Text(chattingListInfo.latestChat),
+      trailing: Text(getStrTimeToPrint(chattingListInfo.latestChatTime)),
       visualDensity: VisualDensity(vertical: 1.0),
     );
   }
+}
+
+String getStrTimeToPrint(String time) {
+  int currentDay = DateTime.now().day;
+  int currentYear = DateTime.now().year;
+
+  int targetDay = DateTime.parse(time).day;
+  int targetMonth = DateTime.parse(time).month;
+  int targetYear = DateTime.parse(time).year;
+
+  if (currentDay == targetDay) {
+    return time.substring(11, 16);
+  }
+  else if (currentDay - targetDay == 1) {
+    return '어제';
+  }
+  else if (currentYear == targetYear) {
+    return targetMonth.toString() + '월 ' + targetDay.toString() + '일';
+  }
+  return targetYear.toString() + '. ' + targetMonth.toString() + '. ' + targetDay.toString() + '.';
 }
