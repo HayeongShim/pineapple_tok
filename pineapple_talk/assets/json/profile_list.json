@@ -1,27 +1,27 @@
 {
   "profile_list": [
     {
-      "id": "0",
+      "id": 0,
       "name": "김진태",
       "photo": "assets/images/ProfileKJT.png"
     },
     {
-      "id": "1",
+      "id": 1,
       "name": "권본권",
       "photo": "assets/images/ProfileKBK.png"
     },
     {
-      "id": "2",
+      "id": 2,
       "name": "심하영",
       "photo": "assets/images/ProfileSHY.png"
     },
     {
-      "id": "3",
+      "id": 3,
       "name": "명희권",
       "photo": ""
     },
     {
-      "id": "4",
+      "id": 4,
       "name": "이승현",
       "photo": ""
     },
@@ -31,12 +31,12 @@
       "photo": ""
     },
     {
-      "id": "6",
+      "id": 6,
       "name": "서지호",
       "photo": ""
     },
     {
-      "id": "7",
+      "id": 7,
       "name": "임규완",
       "photo": ""
     }

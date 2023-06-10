@@ -56,9 +56,9 @@ class FriendsListState extends State<FriendsList> {
   }
 
   void _readJson() async {
-    String myIdx = widget.myAccount.idx;
-    List friendsList = await _readFriendsListJson(myIdx);
-    friendsList.insert(0, myIdx);
+    int myId = widget.myAccount.id;
+    List friendsList = await _readFriendsListJson(myId);
+    friendsList.insert(0, myId);
     await _readProfileListJson(friendsList);
     print(friendsList);
     
@@ -72,12 +72,12 @@ class FriendsListState extends State<FriendsList> {
     setState(() {});
   }
 
-  Future<List> _readFriendsListJson(String myIdx) async {
+  Future<List> _readFriendsListJson(int myId) async {
     final String response = await rootBundle.loadString('assets/json/friends_list.json');
     final data = await json.decode(response);
     List friendsList = [];
-    for (var list in data["friends_list"]){
-      if (myIdx == list['idx']){
+    for (var list in data['friends_list']){
+      if (myId == list['id']){
         friendsList = list['friends'];
         break;
       }
@@ -89,7 +89,7 @@ class FriendsListState extends State<FriendsList> {
     final String response = await rootBundle.loadString('assets/json/profile_list.json');
     final data = await json.decode(response);
     for (var list in friendsList){
-      for (var l in data["profile_list"]){
+      for (var l in data['profile_list']){
         if (list == l['id']){
           _profileList.add(Profile(l['id'], l['name'], l['photo']));
           break;

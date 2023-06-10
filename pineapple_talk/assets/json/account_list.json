@@ -1,14 +1,14 @@
 {
   "account_list": [
     {
-      "id": "starjin123@naver.com",
-      "idx": "0",
+      "email": "starjin123@naver.com",
+      "id": 0,
       "pw": "asdf1234",
       "name": "김진태"
     },
     {
-      "id": "kwonbwonkwon@naver.com",
-      "idx": "1",
+      "email": "kwonbwonkwon@naver.com",
+      "id": 1,
       "pw": "kkkk1234",
       "name": "권본권"
     }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pineapple_talk/account.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
-import 'package:intl/intl.dart';
 
 class ChattingPage extends StatelessWidget {
   Account myAccount = Account();
@@ -65,8 +64,8 @@ class ChattingListState extends State<ChattingList> {
   }
 
   void _readJson() async {
-    String myIdx = widget.myAccount.idx;
-    _chattingListInfo = await _readChattingListInfoJson(myIdx);
+    int myId = widget.myAccount.id;
+    _chattingListInfo = await _readChattingListInfoJson(myId);
     
     /*if (_profileList.length > 1) {
       List<Profile> tempList = _profileList.sublist(1);
@@ -78,13 +77,13 @@ class ChattingListState extends State<ChattingList> {
     setState(() {});
   }
 
-  Future<List<ChattingListInfo>> _readChattingListInfoJson(String myIdx) async {
+  Future<List<ChattingListInfo>> _readChattingListInfoJson(int myId) async {
     final String response = await rootBundle.loadString('assets/json/chatting_list.json');
     final data = await json.decode(response);
     List<ChattingListInfo> chattingListInfo = [];
 
-    for (var list in data["chatting_list"]) {
-      if (list['participants'].contains(myIdx)) {
+    for (var list in data['chatting_list']) {
+      if (list['participants'].contains(myId)) {
         chattingListInfo.add(ChattingListInfo(
           list['id'],
           list['title'],

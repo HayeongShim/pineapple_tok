@@ -1,6 +1,6 @@
 class Account {
-  String id = '';
-  String idx = '';
+  String email = '';
+  int    id = -1;
   String pw = '';
   String name = '';
 }

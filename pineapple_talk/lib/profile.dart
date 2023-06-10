@@ -1,5 +1,5 @@
 class Profile {
-  String id = '';
+  int id = -1;
   String name = '';
   String photo = '';
 

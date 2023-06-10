@@ -76,9 +76,9 @@ class LoginFormState extends State<LoginForm> {
 
   bool _login() {
     for (var account in _accounts){
-      if (account['id'] == myAccount.id && account['pw'] == myAccount.pw){
+      if (account['email'] == myAccount.email && account['pw'] == myAccount.pw){
         myAccount.name = account['name'];
-        myAccount.idx = account['idx'];
+        myAccount.id = account['id'];
         return true;
       }
     }
@@ -107,7 +107,7 @@ class LoginFormState extends State<LoginForm> {
                   return null;
                 },
                 onSaved: (value){
-                  myAccount.id = value!;
+                  myAccount.email = value!;
                 },
                 decoration: InputDecoration(
                   filled: false,

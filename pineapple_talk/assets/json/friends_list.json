@@ -1,14 +1,14 @@
 {
   "friends_list": [
     {
-      "id": "starjin123@naver.com",
-      "idx": "0",
-      "friends": ["1", "2", "3", "4", "5", "6", "7"]
+      "email": "starjin123@naver.com",
+      "id": 0,
+      "friends": [1, 2, 3, 4, 5, 6, 7]
     },
     {
-      "id": "kwonbwonkwon@naver.com",
-      "idx": "1",
-      "friends": ["0", "2", "6", "7"]
+      "email": "kwonbwonkwon@naver.com",
+      "id": 1,
+      "friends": [0, 2, 6, 7]
     }
   ]
 }

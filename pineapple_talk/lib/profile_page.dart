@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pineapple_talk/profile.dart';
 
 class ProfilePage extends StatelessWidget {
-  Profile profile = Profile('', '', '');
+  Profile profile = Profile(-1, '', '');
   ProfilePage(this.profile, {Key? key}) : super(key: key);
 
   @override
