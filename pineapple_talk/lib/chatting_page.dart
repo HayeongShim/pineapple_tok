@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pineapple_talk/account.dart';
+import 'package:pineapple_talk/chatting_room_page.dart';
+import 'package:pineapple_talk/chatting_info.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 
@@ -44,18 +46,8 @@ class ChattingList extends StatefulWidget {
   ChattingListState createState() => ChattingListState();
 }
 
-class ChattingListInfo {
-  int id = -1;
-  String title = '';
-  String latestChat = '';
-  String latestChatTime = '';
-  var participants = [];
-
-  ChattingListInfo(this.id, this.title, this.latestChat, this.latestChatTime, this.participants);
-}
-
 class ChattingListState extends State<ChattingList> {
-  List<ChattingListInfo> _chattingListInfo = [];
+  List<ChattingInfo> _chattingInfo = [];
 
   @override
   void initState() {
@@ -65,35 +57,27 @@ class ChattingListState extends State<ChattingList> {
 
   void _readJson() async {
     int myId = widget.myAccount.id;
-    _chattingListInfo = await _readChattingListInfoJson(myId);
-    
-    /*if (_profileList.length > 1) {
-      List<Profile> tempList = _profileList.sublist(1);
-      tempList.sort((a, b) => a.name.compareTo(b.name)); // 오름차순 정렬
-      _profileList = _profileList.sublist(0, 1); // TBD - range check
-      _profileList.addAll(tempList);
-    }*/
-
+    _chattingInfo = await _readChattingInfoJson(myId);
     setState(() {});
   }
 
-  Future<List<ChattingListInfo>> _readChattingListInfoJson(int myId) async {
+  Future<List<ChattingInfo>> _readChattingInfoJson(int myId) async {
     final String response = await rootBundle.loadString('assets/json/chatting_list.json');
     final data = await json.decode(response);
-    List<ChattingListInfo> chattingListInfo = [];
+    List<ChattingInfo> chattingInfo = [];
 
     for (var list in data['chatting_list']) {
       if (list['participants'].contains(myId)) {
-        chattingListInfo.add(ChattingListInfo(
+        chattingInfo.add(ChattingInfo(
           list['id'],
           list['title'],
           list['latest_chat'],
           list['latest_chat_time'],
-          list['participants'])
+          List<int>.from(list['participants']))
         );
       }
     }
-    return chattingListInfo;
+    return chattingInfo;
   }
 
   @override
@@ -113,10 +97,10 @@ class ChattingListState extends State<ChattingList> {
   }
 
   List<Widget> _buildChattingList(BuildContext context){
-    if (_chattingListInfo.isNotEmpty) {
-      return List.generate(_chattingListInfo.length, (index) {
-        _chattingListInfo.sort((a, b) => b.latestChatTime.compareTo(a.latestChatTime));
-        return _buildProfile(_chattingListInfo[index]);
+    if (_chattingInfo.isNotEmpty) {
+      return List.generate(_chattingInfo.length, (index) {
+        _chattingInfo.sort((a, b) => b.latestChatTime.compareTo(a.latestChatTime));
+        return _buildProfile(_chattingInfo[index]);
       });
     }
     else {
@@ -124,20 +108,20 @@ class ChattingListState extends State<ChattingList> {
     }
   }
 
-  Widget _buildProfile(ChattingListInfo chattingListInfo, [double radius = 25]){
+  Widget _buildProfile(ChattingInfo chattingInfo, [double radius = 25]){
     return ListTile(
       onTap: () {
-        //Navigator.push(context, MaterialPageRoute(
-        //  builder: (context) => ProfilePage(profile))
-        //);
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) => ChattingRoomPage(widget.myAccount, chattingInfo))
+        );
       },
       leading: CircleAvatar(
         backgroundImage: AssetImage('assets/images/Logo.png'),
         radius: radius,
       ),
-      title: Text(chattingListInfo.title),
-      subtitle: Text(chattingListInfo.latestChat),
-      trailing: Text(getStrTimeToPrint(chattingListInfo.latestChatTime)),
+      title: Text(chattingInfo.title),
+      subtitle: Text(chattingInfo.latestChat),
+      trailing: Text(getStrTimeToPrint(chattingInfo.latestChatTime)),
       visualDensity: VisualDensity(vertical: 1.0),
     );
   }

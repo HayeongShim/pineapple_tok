@@ -26,9 +26,9 @@
       "photo": ""
     },
     {
-      "id": "5",
+      "id": 5,
       "name": "빌게이츠",
-      "photo": ""
+      "photo": "assets/images/ProfileBill.png"
     },
     {
       "id": 6,
