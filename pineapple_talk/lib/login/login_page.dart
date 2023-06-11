@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
-import 'package:pineapple_talk/main_page.dart';
-import 'package:pineapple_talk/account.dart';
+import 'package:pineapple_talk/main/main_page.dart';
+import 'package:pineapple_talk/login/account.dart';
 
 class LoginPage extends StatelessWidget {
   @override
