@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pineapple_talk/account.dart';
-import 'package:pineapple_talk/chatting_room_page.dart';
-import 'package:pineapple_talk/chatting_info.dart';
+import 'package:pineapple_talk/login/account.dart';
+import 'package:pineapple_talk/chatting/chatting_room_page.dart';
+import 'package:pineapple_talk/chatting/chatting_info.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 

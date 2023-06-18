@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "817192435514",
+    "project_id": "pineapple-talk-by-guri",
+    "storage_bucket": "pineapple-talk-by-guri.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817192435514:android:58e0f17590f00535871a03",
+        "android_client_info": {
+          "package_name": "com.example.pineapple_talk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "817192435514-5d3po0cs4p4do456rup3e1ikli530bsk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsIy7v-Ve7j7SlYFWlVJ3hjqs51N6k_Xc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "817192435514-5d3po0cs4p4do456rup3e1ikli530bsk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "817192435514-son1er3r365a0pknionvtskuoq61ci52.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.pineappleTalk"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

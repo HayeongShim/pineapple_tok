@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pineapple_talk/friends_page.dart';
-import 'package:pineapple_talk/account.dart';
-import 'package:pineapple_talk/chatting_page.dart';
+import 'package:pineapple_talk/friends/friends_page.dart';
+import 'package:pineapple_talk/login/account.dart';
+import 'package:pineapple_talk/chatting/chatting_page.dart';
 
 class MainPage extends StatefulWidget {
   final Account myAccount;

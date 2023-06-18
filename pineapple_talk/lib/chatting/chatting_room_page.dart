@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pineapple_talk/chatting_info.dart';
-import 'package:pineapple_talk/account.dart';
-import 'package:pineapple_talk/profile.dart';
+import 'package:pineapple_talk/chatting/chatting_info.dart';
+import 'package:pineapple_talk/login/account.dart';
+import 'package:pineapple_talk/friends/profile.dart';
 import 'dart:convert';
 
 class ChattingRoomPage extends StatelessWidget {

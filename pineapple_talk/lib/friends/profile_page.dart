@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pineapple_talk/profile.dart';
+import 'package:pineapple_talk/friends/profile.dart';
 
 class ProfilePage extends StatelessWidget {
   Profile profile = Profile(-1, '', '');
