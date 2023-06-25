@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'dart:convert';
 import 'package:pineapple_talk/main/main_page.dart';
 import 'package:pineapple_talk/login/account.dart';
 
@@ -55,16 +53,7 @@ class LoginForm extends StatefulWidget {
 
 class LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
-  List _accounts = [];
-  Account myAccount = Account();
-
-  Future<void> readJson() async {
-    final String response = await rootBundle.loadString('assets/json/account_list.json');
-    final data = await json.decode(response);
-    setState(() {
-      _accounts = data["account_list"];
-    });
-  }
+  Account account = Account();
 
   bool _tryValidation(){
     final isValid = _formKey.currentState!.validate();
@@ -74,23 +63,26 @@ class LoginFormState extends State<LoginForm> {
     return isValid;
   }
 
-  bool _login() {
-    for (var account in _accounts){
-      if (account['email'] == myAccount.email && account['pw'] == myAccount.pw){
-        myAccount.name = account['name'];
-        myAccount.id = account['id'];
-        return true;
-      }
+  Future<bool> _login(BuildContext context, Account account) async {
+    bool isValid = await account.checkValidity();
+
+    if (!isValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('invalid account')),
+      );
+      return false;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('invalid account')),
-    );
-    return false;
+    else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MainPage(account,)),
+      );
+      return true;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    readJson();
     return Stack(
       children: [
         Form(
@@ -107,7 +99,7 @@ class LoginFormState extends State<LoginForm> {
                   return null;
                 },
                 onSaved: (value){
-                  myAccount.email = value!;
+                  account.email = value!;
                 },
                 decoration: InputDecoration(
                   filled: false,
@@ -124,7 +116,7 @@ class LoginFormState extends State<LoginForm> {
                   return null;
                 },
                 onSaved: (value){
-                  myAccount.pw = value!;
+                  account.pw = value!;
                 },
                 decoration: InputDecoration(
                   filled: false,
@@ -142,11 +134,7 @@ class LoginFormState extends State<LoginForm> {
               ElevatedButton(
                 onPressed: () async {
                   if (!_tryValidation()) return;
-                  if (!_login()) return;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MainPage(myAccount,)),
-                  );
+                  _login(context, account);
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -154,7 +142,7 @@ class LoginFormState extends State<LoginForm> {
                   ),
                   minimumSize: Size(double.infinity, 50),
                 ),
-                child: Text("LOGIN"),
+                child: Text('LOGIN'),
               ),
             ]
           )
