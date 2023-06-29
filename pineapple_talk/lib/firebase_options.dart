@@ -49,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '817192435514',
     projectId: 'pineapple-talk-by-guri',
     authDomain: 'pineapple-talk-by-guri.firebaseapp.com',
+    databaseURL: 'https://pineapple-talk-by-guri-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'pineapple-talk-by-guri.appspot.com',
   );
 
@@ -57,6 +58,7 @@ class DefaultFirebaseOptions {
     appId: '1:817192435514:android:58e0f17590f00535871a03',
     messagingSenderId: '817192435514',
     projectId: 'pineapple-talk-by-guri',
+    databaseURL: 'https://pineapple-talk-by-guri-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'pineapple-talk-by-guri.appspot.com',
   );
 
@@ -65,6 +67,7 @@ class DefaultFirebaseOptions {
     appId: '1:817192435514:ios:88e2414adc1d6a1d871a03',
     messagingSenderId: '817192435514',
     projectId: 'pineapple-talk-by-guri',
+    databaseURL: 'https://pineapple-talk-by-guri-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'pineapple-talk-by-guri.appspot.com',
     iosClientId: '817192435514-son1er3r365a0pknionvtskuoq61ci52.apps.googleusercontent.com',
     iosBundleId: 'com.example.pineappleTalk',
@@ -75,6 +78,7 @@ class DefaultFirebaseOptions {
     appId: '1:817192435514:ios:88e2414adc1d6a1d871a03',
     messagingSenderId: '817192435514',
     projectId: 'pineapple-talk-by-guri',
+    databaseURL: 'https://pineapple-talk-by-guri-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'pineapple-talk-by-guri.appspot.com',
     iosClientId: '817192435514-son1er3r365a0pknionvtskuoq61ci52.apps.googleusercontent.com',
     iosBundleId: 'com.example.pineappleTalk',
