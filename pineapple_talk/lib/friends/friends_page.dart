@@ -46,7 +46,7 @@ class FriendsList extends StatefulWidget {
 
 class FriendsListState extends State<FriendsList> {
   bool isDataLoading = true;
-  List<Profile> _profileList = [];
+  List<Profile>? _profileList = [];
 
   @override
   void initState() {
@@ -58,16 +58,14 @@ class FriendsListState extends State<FriendsList> {
     ProfileHandler profileHandler = ProfileHandler();
     _profileList = await profileHandler.getProfileList();
 
-    /*
-    if (_profileList.length > 1) {
-      List<Profile> tempList = _profileList.sublist(1);
-      tempList.sort((a, b) => a.name.compareTo(b.name)); // 오름차순 정렬
-      _profileList = _profileList.sublist(0, 1); // TBD - range check
-      _profileList.addAll(tempList);
-    }
-    */
+    setState(() { isDataLoading = false; print ("set data loading false");});
     
-    setState(() { isDataLoading = false; });
+    if (_profileList!.length > 1) {
+      List<Profile> tempList = _profileList!.sublist(1);
+      tempList.sort((a, b) => a.name.compareTo(b.name)); // 오름차순 정렬
+      _profileList = _profileList!.sublist(0, 1); // TBD - range check
+      _profileList!.addAll(tempList);
+    }
   }
 
   @override
@@ -82,11 +80,11 @@ class FriendsListState extends State<FriendsList> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (_profileList.isNotEmpty)
-              _buildProfile(_profileList.first, 35), // TBD - null check
+            if (_profileList != null)
+              _buildProfile(_profileList!.first, 35), // TBD - null check
             Divider(thickness: 1, height: 20),
             Text(
-              '     친구 ${_profileList.length - 1}',
+              '     친구 ${_profileList!.length - 1}',
               style: TextStyle(fontSize: 15, color: Colors.black, height: 1.0,),
               textAlign: TextAlign.left,
             ),
@@ -102,11 +100,9 @@ class FriendsListState extends State<FriendsList> {
   }
 
   List<Widget> _buildFriendsProfile(BuildContext context){
-    print("size");
-    print(_profileList.length);
-    if (_profileList.length > 1) {
-      return List.generate(_profileList.length - 1, (index) {
-        return _buildProfile(_profileList[index + 1]);
+    if (_profileList!.length > 1) {
+      return List.generate(_profileList!.length - 1, (index) {
+        return _buildProfile(_profileList![index + 1]);
       });
     }
     else {

@@ -21,7 +21,7 @@ class ProfileHandler {
     return Profile(0, doc['name'], doc['photo']);
   }
 
-  Future<List<Profile>> getProfileList() async {
+  Future<List<Profile>?> getProfileList() async {
     List<Profile> profileList = [];
 
     // get my profile
@@ -33,10 +33,10 @@ class ProfileHandler {
     final myProfileDoc = await myProfile.get();
 
     // get my friends' profile
-    List.from(myProfileDoc['friends']).forEach((element) async {
-      print(element);
+    List<dynamic> friends = List.from(myProfileDoc['friends']);
+    for (var element in friends) {
       profileList.add(await getProfile(element));
-    });
+    }
 
     return profileList;
   }
