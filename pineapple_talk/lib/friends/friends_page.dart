@@ -51,7 +51,7 @@ class FriendsListState extends State<FriendsList> {
     ProfileHandler profileHandler = ProfileHandler();
     _profileList = await profileHandler.getProfileList();
 
-    setState(() { isDataLoading = false; print ("set data loading false"); });
+    setState(() { isDataLoading = false; });
     
     if (_profileList!.length > 1) {
       List<Profile> tempList = _profileList!.sublist(1);
