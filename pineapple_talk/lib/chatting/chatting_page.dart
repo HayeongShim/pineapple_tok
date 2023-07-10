@@ -47,65 +47,50 @@ class ChattingList extends StatefulWidget {
 }
 
 class ChattingListState extends State<ChattingList> {
-  List<ChattingInfo> _chattingInfo = [];
+  bool isDataLoading = true;
+  List<ChattingInfo>? _chattingInfo = [];
 
   @override
   void initState() {
     super.initState();
-    _readJson();
+    _loadData();
   }
 
-  void _readJson() async {
-    int myId = widget.myAccount.id;
-    _chattingInfo = await _readChattingInfoJson(myId);
-    setState(() {});
-  }
-
-  Future<List<ChattingInfo>> _readChattingInfoJson(int myId) async {
-    final String response = await rootBundle.loadString('assets/json/chatting_list.json');
-    final data = await json.decode(response);
-    List<ChattingInfo> chattingInfo = [];
-
-    for (var list in data['chatting_list']) {
-      if (list['participants'].contains(myId)) {
-        chattingInfo.add(ChattingInfo(
-          list['id'],
-          list['title'],
-          list['latest_chat'],
-          list['latest_chat_time'],
-          List<int>.from(list['participants']))
-        );
-      }
-    }
-    return chattingInfo;
+  void _loadData() async {
+    ChattingInfoHandler chattingInfoHandler = ChattingInfoHandler();
+    _chattingInfo = await chattingInfoHandler.getChattingInfoList();
+    
+    setState(() { isDataLoading = false; print ("set data loading false"); });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: ListView(
-              children: _buildChattingList(context),
+    if (isDataLoading) {
+      return Center (
+        child: CircularProgressIndicator(),
+      );
+    }
+    else {
+      return Scaffold(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ListView(
+                children: _buildChattingList(context),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
   }
 
   List<Widget> _buildChattingList(BuildContext context){
-    if (_chattingInfo.isNotEmpty) {
-      return List.generate(_chattingInfo.length, (index) {
-        _chattingInfo.sort((a, b) => b.latestChatTime.compareTo(a.latestChatTime));
-        return _buildProfile(_chattingInfo[index]);
-      });
-    }
-    else {
-      return [ CircularProgressIndicator() ];
-    }
+    return List.generate(_chattingInfo!.length, (index) {
+      _chattingInfo!.sort((a, b) => b.latestChatTime.compareTo(a.latestChatTime));
+      return _buildProfile(_chattingInfo![index]);
+    });
   }
 
   Widget _buildProfile(ChattingInfo chattingInfo, [double radius = 25]){
@@ -121,28 +106,9 @@ class ChattingListState extends State<ChattingList> {
       ),
       title: Text(chattingInfo.title),
       subtitle: Text(chattingInfo.latestChat),
-      trailing: Text(getStrTimeToPrint(chattingInfo.latestChatTime)),
+      trailing: Text(chattingInfo.getStrTimeToPrint()),
       visualDensity: VisualDensity(vertical: 1.0),
     );
   }
 }
 
-String getStrTimeToPrint(String time) {
-  int currentDay = DateTime.now().day;
-  int currentYear = DateTime.now().year;
-
-  int targetDay = DateTime.parse(time).day;
-  int targetMonth = DateTime.parse(time).month;
-  int targetYear = DateTime.parse(time).year;
-
-  if (currentDay == targetDay) {
-    return time.substring(11, 16);
-  }
-  else if (currentDay - targetDay == 1) {
-    return '어제';
-  }
-  else if (currentYear == targetYear) {
-    return targetMonth.toString() + '월 ' + targetDay.toString() + '일';
-  }
-  return targetYear.toString() + '. ' + targetMonth.toString() + '. ' + targetDay.toString() + '.';
-}

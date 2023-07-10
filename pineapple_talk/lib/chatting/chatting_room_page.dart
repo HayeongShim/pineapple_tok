@@ -65,9 +65,10 @@ class _ChatBubblesState extends State<ChatBubbles> {
   @override
   void initState() {
     super.initState();
-    _readJson();
+    //_readJson();
   }
 
+  /*
   void _readJson() async {
     List<Profile> participants = await _readProfileListJson(widget.chattingInfo.participants);
     
@@ -92,6 +93,7 @@ class _ChatBubblesState extends State<ChatBubbles> {
     }
     return profileList;
   }
+  */
 
   Future<List<ChatBubble>> _readChatBubbleJson(int chatRoomId, List<Profile> participants) async {
     final String chattingMsgDataRsp = await rootBundle.loadString('assets/json/chatting_message.json');

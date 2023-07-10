@@ -17,7 +17,6 @@ class ProfileHandler {
   Future<Profile> getProfile(String id) async {
     final docRef = _firestore.collection('user').doc('profile').collection(id).doc('data');
     final doc = await docRef.get();
-    print(doc['name']);
     return Profile(0, doc['name'], doc['photo']);
   }
 

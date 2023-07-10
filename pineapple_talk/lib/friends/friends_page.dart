@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pineapple_talk/login/account.dart';
 import 'package:pineapple_talk/friends/profile.dart';
 import 'package:pineapple_talk/friends/profile_page.dart';
 
 class FriendsPage extends StatelessWidget {
-  Account myAccount = Account();
-  FriendsPage(this.myAccount, {Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +23,7 @@ class FriendsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: FriendsList(myAccount,),
+              child: FriendsList(),
             ),
           ],
         ),
@@ -37,9 +33,6 @@ class FriendsPage extends StatelessWidget {
 }
 
 class FriendsList extends StatefulWidget {
-  FriendsList(this.myAccount, {Key? key}) : super(key: key);
-  Account myAccount = Account();
-
   @override
   FriendsListState createState() => FriendsListState();
 }
@@ -58,7 +51,7 @@ class FriendsListState extends State<FriendsList> {
     ProfileHandler profileHandler = ProfileHandler();
     _profileList = await profileHandler.getProfileList();
 
-    setState(() { isDataLoading = false; print ("set data loading false");});
+    setState(() { isDataLoading = false; print ("set data loading false"); });
     
     if (_profileList!.length > 1) {
       List<Profile> tempList = _profileList!.sublist(1);
