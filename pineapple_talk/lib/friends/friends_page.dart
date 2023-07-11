@@ -49,7 +49,7 @@ class FriendsListState extends State<FriendsList> {
 
   void _loadData() async {
     ProfileHandler profileHandler = ProfileHandler();
-    _profileList = await profileHandler.getProfileList();
+    _profileList = await profileHandler.getFriendProfileList();
 
     setState(() { isDataLoading = false; });
     
@@ -92,6 +92,7 @@ class FriendsListState extends State<FriendsList> {
     }
   }
 
+  // TBD - move into profile.dart file
   List<Widget> _buildFriendsProfile(BuildContext context){
     if (_profileList!.length > 1) {
       return List.generate(_profileList!.length - 1, (index) {

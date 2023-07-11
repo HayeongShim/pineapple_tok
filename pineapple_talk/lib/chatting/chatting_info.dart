@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:tuple/tuple.dart';
 
 class ChattingInfo {
-  int id = -1;
+  String id = '';
   String title = '';
   String latestChat = '';
   String latestChatTime = '';
@@ -51,13 +51,13 @@ class ChattingInfoHandler {
       final chattingRef = _firestore.collection('chatting').doc('chatroom').collection(chatroom).doc('info');
       final chatting = await chattingRef.get();
       if (!chatting.exists) {
-        return [];
+        continue;
       }
 
       var lastChat = await getLastChat(chatroom);
       List<String> member = List.from(chatting['member']);
 
-      chattingInfoList.add(ChattingInfo(0, chatting['title'], lastChat.item1, lastChat.item2, member));
+      chattingInfoList.add(ChattingInfo(chatroom, chatting['title'], lastChat.item1, lastChat.item2, member));
     }
 
     return chattingInfoList;

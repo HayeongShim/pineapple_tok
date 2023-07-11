@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
+import 'package:tuple/tuple.dart';
 
 class Profile {
   int id = -1;
@@ -20,7 +21,7 @@ class ProfileHandler {
     return Profile(0, doc['name'], doc['photo']);
   }
 
-  Future<List<Profile>?> getProfileList() async {
+  Future<List<Profile>?> getFriendProfileList() async {
     List<Profile> profileList = [];
 
     // get my profile
@@ -38,5 +39,27 @@ class ProfileHandler {
     }
 
     return profileList;
+  }
+
+  Future<List<Profile>?> getMemberProfileList(String chatRoomId) async {
+    List<Profile> memberProfileList = [];
+
+    // get member id
+    final chattingRef = _firestore.collection('chatting').doc('chatroom').collection(chatRoomId).doc('info');
+    final chatting = await chattingRef.get();
+
+    // get members' profile
+    List<String> members = List.from(chatting['member']);
+    for (var member in members) {
+      memberProfileList.add(await getProfile(member));
+    }
+
+    return memberProfileList;
+  }
+
+  Future<Tuple2<String, String>> getProfileById(String id) async {
+    final profileRef = _firestore.collection('user').doc('profile').collection(id).doc('data');
+    final profile = await profileRef.get();
+    return Tuple2<String, String>(profile['name'], profile['photo']);
   }
 }

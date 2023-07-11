@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pineapple_talk/chatting/chatting_info.dart';
@@ -7,7 +9,7 @@ import 'dart:convert';
 
 class ChattingRoomPage extends StatelessWidget {
   Account myAccount = Account();
-  ChattingInfo chattingInfo = ChattingInfo(-1, '', '', '', []);
+  ChattingInfo chattingInfo = ChattingInfo('', '', '', '', []);
 
   ChattingRoomPage(this.myAccount, this.chattingInfo, {Key? key}) : super(key: key);
 
@@ -49,101 +51,94 @@ class ChatBubble {
   ChatBubble(this.id, this.name, this.photo, this.message, this.chatTime);
 }
 
+class ChatBubbleHandler {
+  final _authentication = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+
+  Future<List<ChatBubble>?> getChatBubbleList(String chatRoomId, List<Profile>? memberProfileList) async {
+    List<ChatBubble> chatBubble = [];
+    
+    ProfileHandler profileHandler = ProfileHandler();
+
+    // get messages
+    final messageRef = _firestore.collection('chatting').doc('chatroom').collection(chatRoomId).doc('chat')
+                                 .collection('messages');
+    final message = await messageRef.get();
+    
+    for (int i = 0; i < message.size; i++) {
+      final messageInfo = message.docs[i];
+      var profile = await profileHandler.getProfileById(messageInfo['id']);
+      chatBubble.add(ChatBubble(0, profile.item1, profile.item2, messageInfo['message'], messageInfo['time']));
+    }
+
+    return chatBubble;
+  }
+}
+
 class ChatBubbles extends StatefulWidget {
   ChatBubbles(this.chattingInfo, this.myAccount, {Key? key}) : super(key: key);
 
   Account myAccount = Account();
-  ChattingInfo chattingInfo = ChattingInfo(-1, '', '', '', []);
+  ChattingInfo chattingInfo = ChattingInfo('', '', '', '', []);
 
   @override
   _ChatBubblesState createState() => _ChatBubblesState();
 }
 
 class _ChatBubblesState extends State<ChatBubbles> {
-  List<ChatBubble> _chatBubble = [];
+  bool isDataLoading = true;
+  List<Profile>? _profileList = [];
+  List<ChatBubble>? _chatBubble = [];
 
   @override
   void initState() {
     super.initState();
-    //_readJson();
+    _loadJson();
   }
 
-  /*
-  void _readJson() async {
-    List<Profile> participants = await _readProfileListJson(widget.chattingInfo.participants);
-    
-    int chatRoomId = widget.chattingInfo.id;
-    _chatBubble = await _readChatBubbleJson(chatRoomId, participants);
+  void _loadJson() async {
+    String chatRoomId = widget.chattingInfo.id;
 
-    setState(() {});
-  }
+    ProfileHandler profileHandler = ProfileHandler();
+    _profileList = await profileHandler.getMemberProfileList(chatRoomId);
 
-  Future<List<Profile>> _readProfileListJson(List<int> participants) async {
-    final String response = await rootBundle.loadString('assets/json/profile_list.json');
-    final data = await json.decode(response);
-    List<Profile> profileList = [];
+    ChatBubbleHandler chatBubbleHandler = ChatBubbleHandler();
+    _chatBubble = await chatBubbleHandler.getChatBubbleList(chatRoomId, _profileList);
 
-    for (var id in participants){
-      for (var list in data['profile_list']){
-        if (id == list['id']){
-          profileList.add(Profile(list['id'], list['name'], list['photo']));
-          break;
-        }
-      }
-    }
-    return profileList;
-  }
-  */
-
-  Future<List<ChatBubble>> _readChatBubbleJson(int chatRoomId, List<Profile> participants) async {
-    final String chattingMsgDataRsp = await rootBundle.loadString('assets/json/chatting_message.json');
-    final chattingMsgData = await json.decode(chattingMsgDataRsp);
-
-    List<ChatBubble> chatBubble = [];
-
-    for (var list in chattingMsgData['chatting_message']) {
-      if (list['id'] == chatRoomId) {
-        for (var l in list['messages']) {
-          // TBD - refactoring (remove for loop)
-          String name = '';
-          String photo = '';
-          for (var p in participants) {
-            if (p.id == l['id']) {
-              name = p.name;
-              photo = p.photo;
-            }
-          }
-          chatBubble.add(ChatBubble(l['id'], name, photo, l['message'], l['time']));
-        }
-      }
-    }
-    return chatBubble;
+    setState(() { isDataLoading = false; });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: ListView(
-              children: _buildChatBubbles(context),
+    if (isDataLoading) {
+      return Center (
+        child: CircularProgressIndicator(),
+      );
+    }
+    else {
+      return Scaffold(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ListView(
+                children: _buildChatBubbles(context),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
   }
 
   List<Widget> _buildChatBubbles(BuildContext context){
-    if (_chatBubble.isNotEmpty) {
-      return List.generate(_chatBubble.length, (index) {
-        if (_chatBubble[index].id == widget.myAccount.id) {
-          return _buildChatBubble(_chatBubble[index], true);
+    if (_chatBubble!.isNotEmpty) {
+      return List.generate(_chatBubble!.length, (index) {
+        if (_chatBubble![index].id == widget.myAccount.id) {
+          return _buildChatBubble(_chatBubble![index], true);
         }
         else {
-          return _buildChatBubble(_chatBubble[index], false);
+          return _buildChatBubble(_chatBubble![index], false);
         }
       });
     }
