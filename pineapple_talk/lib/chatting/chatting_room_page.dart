@@ -1,17 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:pineapple_talk/chatting/chatting_info.dart';
-import 'package:pineapple_talk/login/account.dart';
 import 'package:pineapple_talk/friends/profile.dart';
-import 'dart:convert';
 
 class ChattingRoomPage extends StatelessWidget {
-  Account myAccount = Account();
   ChattingInfo chattingInfo = ChattingInfo('', '', '', '', []);
 
-  ChattingRoomPage(this.myAccount, this.chattingInfo, {Key? key}) : super(key: key);
+  ChattingRoomPage(this.chattingInfo, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +28,7 @@ class ChattingRoomPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: ChatBubbles(chattingInfo, myAccount),
+              child: ChatBubbles(chattingInfo),
             ),
           ],
         ),
@@ -42,7 +38,7 @@ class ChattingRoomPage extends StatelessWidget {
 }
 
 class ChatBubble {
-  int id = -1;
+  String id = '';
   String name = '';
   String photo = '';
   String message = '';
@@ -68,17 +64,73 @@ class ChatBubbleHandler {
     for (int i = 0; i < message.size; i++) {
       final messageInfo = message.docs[i];
       var profile = await profileHandler.getProfileById(messageInfo['id']);
-      chatBubble.add(ChatBubble(0, profile.item1, profile.item2, messageInfo['message'], messageInfo['time']));
+      chatBubble.add(ChatBubble(messageInfo['id'], profile.item1, profile.item2, messageInfo['message'], messageInfo['time']));
     }
 
     return chatBubble;
   }
+
+  Widget buildChatBubble(ChatBubble chatBubble){
+    final curUser = _authentication.currentUser;
+    bool isMyChat = false;
+    if (chatBubble.id == curUser!.uid) {
+      isMyChat = true;
+    }
+
+    // TBD - refactoring
+    if (isMyChat) {
+      return ListTile(
+        subtitle: Container (
+          decoration: BoxDecoration(
+            color: Colors.yellow.shade100,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          width: 50,
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+          margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          child: Text(
+            chatBubble.message,
+            //style: TextStyle
+          )
+        ),
+        trailing: Text(DateTime.parse(chatBubble.chatTime).hour.toString() + '시 ' +
+                      DateTime.parse(chatBubble.chatTime).minute.toString() + '분'),
+        visualDensity: VisualDensity(vertical: 1.0),
+      );
+    }
+
+    else {
+      return ListTile(
+        leading: CircleAvatar(
+          backgroundImage: chatBubble.photo == '' ?
+            AssetImage('assets/images/Logo.png') : AssetImage(chatBubble.photo),
+            radius: 25,
+        ),
+        title: Text(chatBubble.name),
+        subtitle: Container (
+          decoration: BoxDecoration(
+            color: Colors.yellow.shade100,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          width: 50,
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+          margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          child: Text(
+            chatBubble.message,
+            //style: TextStyle
+          )
+        ),
+        trailing: Text(DateTime.parse(chatBubble.chatTime).hour.toString() + '시 ' +
+                      DateTime.parse(chatBubble.chatTime).minute.toString() + '분'),
+        visualDensity: VisualDensity(vertical: 1.0),
+      );
+    }
+  }
 }
 
 class ChatBubbles extends StatefulWidget {
-  ChatBubbles(this.chattingInfo, this.myAccount, {Key? key}) : super(key: key);
+  ChatBubbles(this.chattingInfo, {Key? key}) : super(key: key);
 
-  Account myAccount = Account();
   ChattingInfo chattingInfo = ChattingInfo('', '', '', '', []);
 
   @override
@@ -134,45 +186,12 @@ class _ChatBubblesState extends State<ChatBubbles> {
   List<Widget> _buildChatBubbles(BuildContext context){
     if (_chatBubble!.isNotEmpty) {
       return List.generate(_chatBubble!.length, (index) {
-        if (_chatBubble![index].id == widget.myAccount.id) {
-          return _buildChatBubble(_chatBubble![index], true);
-        }
-        else {
-          return _buildChatBubble(_chatBubble![index], false);
-        }
+        ChatBubbleHandler chatBubbleHandler = ChatBubbleHandler();
+        return chatBubbleHandler.buildChatBubble(_chatBubble![index]);
       });
     }
     else {
       return [ CircularProgressIndicator() ];
     }
-  }
-
-  // TBD - refactoring
-  Widget _buildChatBubble(ChatBubble chatBubble, bool isMyChat){
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundImage: isMyChat ? null :      
-          chatBubble.photo == '' ?
-            AssetImage('assets/images/Logo.png') : AssetImage(chatBubble.photo),
-          radius: 25,
-      ),
-      title: isMyChat ? null : Text(chatBubble.name),
-      subtitle: Container (
-        decoration: BoxDecoration(
-          color: Colors.yellow.shade100,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        width: 50,
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-        margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        child: Text(
-          chatBubble.message,
-          //style: TextStyle
-        )
-      ),
-      trailing: Text(DateTime.parse(chatBubble.chatTime).hour.toString() + '시 ' +
-                     DateTime.parse(chatBubble.chatTime).minute.toString() + '분'),
-      visualDensity: VisualDensity(vertical: 1.0),
-    );
   }
 }

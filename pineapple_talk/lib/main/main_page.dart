@@ -18,7 +18,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     _pages.add(FriendsPage());
-    _pages.add(ChattingPage(widget.myAccount));
+    _pages.add(ChattingPage());
   }
 
   void _onItemTapped(int index) {

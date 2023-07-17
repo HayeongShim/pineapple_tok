@@ -4,9 +4,6 @@ import 'package:pineapple_talk/chatting/chatting_room_page.dart';
 import 'package:pineapple_talk/chatting/chatting_info.dart';
 
 class ChattingPage extends StatelessWidget {
-  Account myAccount = Account();
-  ChattingPage(this.myAccount, {Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +24,7 @@ class ChattingPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: ChattingList(myAccount,),
+              child: ChattingList(),
             ),
           ],
         ),
@@ -37,9 +34,6 @@ class ChattingPage extends StatelessWidget {
 }
 
 class ChattingList extends StatefulWidget {
-  ChattingList(this.myAccount, {Key? key}) : super(key: key);
-  Account myAccount = Account();
-
   @override
   ChattingListState createState() => ChattingListState();
 }
@@ -101,7 +95,7 @@ class ChattingListState extends State<ChattingList> {
     return ListTile(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(
-          builder: (context) => ChattingRoomPage(widget.myAccount, chattingInfo))
+          builder: (context) => ChattingRoomPage(chattingInfo))
         );
       },
       leading: CircleAvatar(
