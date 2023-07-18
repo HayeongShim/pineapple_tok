@@ -61,69 +61,92 @@ class ChatBubbleHandler {
                                  .collection('messages');
     final message = await messageRef.get();
     
-    for (int i = 0; i < message.size; i++) {
-      final messageInfo = message.docs[i];
-      var profile = await profileHandler.getProfileById(messageInfo['id']);
-      chatBubble.add(ChatBubble(messageInfo['id'], profile.item1, profile.item2, messageInfo['message'], messageInfo['time']));
+    for (var msg in message.docs)
+    {
+      var profile = await profileHandler.getProfileById(msg['id']);
+      chatBubble.add(ChatBubble(msg['id'], profile.item1, profile.item2, msg['message'], msg['time']));
     }
 
     return chatBubble;
   }
 
-  Widget buildChatBubble(ChatBubble chatBubble){
+  Widget buildMyChatBubble(ChatBubble chatBubble) {
+    return ListTile(
+      subtitle: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '\n' + DateTime.parse(chatBubble.chatTime).hour.toString() + '시 ' +
+            DateTime.parse(chatBubble.chatTime).minute.toString() + '분',
+            style: TextStyle(fontSize: 12)
+          ),
+          Flexible(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.yellow.shade100,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              child: Text(
+                chatBubble.message,
+                softWrap: true,
+                textAlign: TextAlign.right,
+              ),
+            ),
+          ),
+        ],
+      ),
+      visualDensity: VisualDensity(vertical: 1.0),
+    );
+  }
+
+  Widget buildFriendsChatBubble(ChatBubble chatBubble) {
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundImage: chatBubble.photo == '' ?
+          AssetImage('assets/images/Logo.png') : AssetImage(chatBubble.photo),
+          radius: 25,
+      ),
+      title: Text(chatBubble.name),
+      subtitle: Row (
+        children: [
+          Flexible (
+            child: Container (
+              decoration: BoxDecoration(
+                color: Colors.yellow.shade100,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              child: Text(
+                chatBubble.message,
+                softWrap: true,
+                textAlign: TextAlign.left,
+              )
+            )
+          ),
+          Text (
+            '\n' + DateTime.parse(chatBubble.chatTime).hour.toString() + '시 ' +
+            DateTime.parse(chatBubble.chatTime).minute.toString() + '분',
+            style: TextStyle(fontSize: 12)
+          ),
+        ]
+      ),
+      visualDensity: VisualDensity(vertical: 1.0),
+    );
+  }
+
+  Widget buildChatBubble(ChatBubble chatBubble) {
     final curUser = _authentication.currentUser;
-    bool isMyChat = false;
+    
     if (chatBubble.id == curUser!.uid) {
-      isMyChat = true;
+      return buildMyChatBubble(chatBubble);
     }
-
-    // TBD - refactoring
-    if (isMyChat) {
-      return ListTile(
-        subtitle: Container (
-          decoration: BoxDecoration(
-            color: Colors.yellow.shade100,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          width: 50,
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-          margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          child: Text(
-            chatBubble.message,
-            //style: TextStyle
-          )
-        ),
-        trailing: Text(DateTime.parse(chatBubble.chatTime).hour.toString() + '시 ' +
-                      DateTime.parse(chatBubble.chatTime).minute.toString() + '분'),
-        visualDensity: VisualDensity(vertical: 1.0),
-      );
-    }
-
     else {
-      return ListTile(
-        leading: CircleAvatar(
-          backgroundImage: chatBubble.photo == '' ?
-            AssetImage('assets/images/Logo.png') : AssetImage(chatBubble.photo),
-            radius: 25,
-        ),
-        title: Text(chatBubble.name),
-        subtitle: Container (
-          decoration: BoxDecoration(
-            color: Colors.yellow.shade100,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          width: 50,
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-          margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          child: Text(
-            chatBubble.message,
-            //style: TextStyle
-          )
-        ),
-        trailing: Text(DateTime.parse(chatBubble.chatTime).hour.toString() + '시 ' +
-                      DateTime.parse(chatBubble.chatTime).minute.toString() + '분'),
-        visualDensity: VisualDensity(vertical: 1.0),
-      );
+      return buildFriendsChatBubble(chatBubble);
     }
   }
 }
