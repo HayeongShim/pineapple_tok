@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pineapple_talk/chatting/chatting_info.dart';
+import 'package:pineapple_talk/chatting/new_message.dart';
 import 'package:pineapple_talk/friends/profile.dart';
 
 class ChattingRoomPage extends StatelessWidget {
@@ -164,6 +165,7 @@ class _ChatBubblesState extends State<ChatBubbles> {
   bool isDataLoading = true;
   List<Profile>? _profileList = [];
   List<ChatBubble>? _chatBubble = [];
+  String chatRoomId = '';
 
   @override
   void initState() {
@@ -172,7 +174,7 @@ class _ChatBubblesState extends State<ChatBubbles> {
   }
 
   void _loadJson() async {
-    String chatRoomId = widget.chattingInfo.id;
+    chatRoomId = widget.chattingInfo.id;
 
     ProfileHandler profileHandler = ProfileHandler();
     _profileList = await profileHandler.getMemberProfileList(chatRoomId);
@@ -200,6 +202,7 @@ class _ChatBubblesState extends State<ChatBubbles> {
                 children: _buildChatBubbles(context),
               ),
             ),
+            NewMessage(chatRoomId : chatRoomId),
           ],
         ),
       );
