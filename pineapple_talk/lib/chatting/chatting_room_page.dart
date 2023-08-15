@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pineapple_talk/chatting/chatting_info.dart';
 import 'package:pineapple_talk/chatting/new_message.dart';
 import 'package:pineapple_talk/friends/profile.dart';
@@ -209,15 +210,48 @@ class _ChatBubblesState extends State<ChatBubbles> {
     }
   }
 
+  Widget makeDateSeparator(DateTime datetime) {
+    return Center(
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 7.0),
+        padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 2.0),
+        decoration: BoxDecoration(
+          color: Colors.black12,
+            borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          DateFormat('y년 M월 d일').format(datetime),
+          style: TextStyle(
+            fontSize: 15.0,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
   List<Widget> _buildChatBubbles(BuildContext context){
+    List<Widget> widgetList = [];
+
     if (_chatBubble!.isNotEmpty) {
-      return List.generate(_chatBubble!.length, (index) {
+      String prevDate = '';
+      String currDate = '';
+
+      for (int index = 0; index < _chatBubble!.length; index++) {
+        currDate = DateFormat('yMd').format(DateTime.parse(_chatBubble![index].chatTime));
+        if (prevDate != currDate) {
+          widgetList.add(makeDateSeparator(DateTime.parse(_chatBubble![index].chatTime)));
+        }
+        prevDate = currDate;
+
         ChatBubbleHandler chatBubbleHandler = ChatBubbleHandler();
-        return chatBubbleHandler.buildChatBubble(_chatBubble![index]);
-      });
+        widgetList.add(chatBubbleHandler.buildChatBubble(_chatBubble![index]));
+      }
+    } else {
+      widgetList.add(CircularProgressIndicator());
     }
-    else {
-      return [ CircularProgressIndicator() ];
-    }
+
+    return widgetList;
   }
 }
