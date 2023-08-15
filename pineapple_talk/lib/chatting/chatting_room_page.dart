@@ -151,6 +151,27 @@ class ChatBubbleHandler {
       return buildFriendsChatBubble(chatBubble);
     }
   }
+
+  Widget makeDateSeparator(DateTime datetime) {
+    return Center(
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 7.0),
+        padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 2.0),
+        decoration: BoxDecoration(
+          color: Colors.black12,
+            borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          DateFormat('y년 M월 d일').format(datetime),
+          style: TextStyle(
+            fontSize: 15.0,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class ChatBubbles extends StatefulWidget {
@@ -167,6 +188,8 @@ class _ChatBubblesState extends State<ChatBubbles> {
   List<Profile>? _profileList = [];
   List<ChatBubble>? _chatBubble = [];
   String chatRoomId = '';
+
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -194,12 +217,18 @@ class _ChatBubblesState extends State<ChatBubbles> {
       );
     }
     else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // Scroll to the bottom after the widget is built
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      });
+
       return Scaffold(
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: ListView(
+                controller: _scrollController,
                 children: _buildChatBubbles(context),
               ),
             ),
@@ -210,27 +239,6 @@ class _ChatBubblesState extends State<ChatBubbles> {
     }
   }
 
-  Widget makeDateSeparator(DateTime datetime) {
-    return Center(
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 7.0),
-        padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 2.0),
-        decoration: BoxDecoration(
-          color: Colors.black12,
-            borderRadius: BorderRadius.circular(10),
-        ),
-        child: Text(
-          DateFormat('y년 M월 d일').format(datetime),
-          style: TextStyle(
-            fontSize: 15.0,
-            fontWeight: FontWeight.w500,
-            color: Colors.white,
-          ),
-        ),
-      ),
-    );
-  }
-
   List<Widget> _buildChatBubbles(BuildContext context){
     List<Widget> widgetList = [];
 
@@ -239,13 +247,14 @@ class _ChatBubblesState extends State<ChatBubbles> {
       String currDate = '';
 
       for (int index = 0; index < _chatBubble!.length; index++) {
-        currDate = DateFormat('yMd').format(DateTime.parse(_chatBubble![index].chatTime));
-        if (prevDate != currDate) {
-          widgetList.add(makeDateSeparator(DateTime.parse(_chatBubble![index].chatTime)));
-        }
-        prevDate = currDate;
+        DateTime currDateTime = DateTime.parse(_chatBubble![index].chatTime);
+        currDate = DateFormat('yMd').format(currDateTime);
 
         ChatBubbleHandler chatBubbleHandler = ChatBubbleHandler();
+        if (prevDate != currDate) {
+          widgetList.add(chatBubbleHandler.makeDateSeparator(currDateTime));
+        }
+        prevDate = currDate;
         widgetList.add(chatBubbleHandler.buildChatBubble(_chatBubble![index]));
       }
     } else {
