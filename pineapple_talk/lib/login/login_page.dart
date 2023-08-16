@@ -124,29 +124,44 @@ class LoginFormState extends State<LoginForm> {
                 ),
                 obscureText: true,
               ),
+              SizedBox(height: 12.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (!_tryValidation()) return;
+                        _login(context, account);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25.0)
+                        ),
+                        minimumSize: Size(double.infinity, 50),
+                      ),
+                      child: Text('LOG IN'),
+                    ),
+                  ),
+                  SizedBox(width: 12.0),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25.0)
+                        ),
+                        minimumSize: Size(double.infinity, 50),
+                      ),
+                      child: Text('SIGN UP'),
+                    ),
+                  ),
+                ]
+              )
             ],
           ),
         ),
-        Positioned(
-          child: Column(
-            children: [
-              SizedBox(height: 200.0),
-              ElevatedButton(
-                onPressed: () async {
-                  if (!_tryValidation()) return;
-                  _login(context, account);
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.0)
-                  ),
-                  minimumSize: Size(double.infinity, 50),
-                ),
-                child: Text('LOGIN'),
-              ),
-            ]
-          )
-        )
       ]
     );
   }
