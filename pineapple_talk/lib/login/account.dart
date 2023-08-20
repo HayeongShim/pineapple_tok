@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Account {
@@ -21,6 +22,25 @@ class Account {
     }
     catch (e) {
       print(e);
+    }
+
+    return false;
+  }
+
+  Future<bool> signup() async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.
+        createUserWithEmailAndPassword(email: email, password: pw);
+
+      if (userCredential.user != null) {
+        await FirebaseFirestore.instance.collection('user').doc('profile').
+          collection(userCredential.user!.uid).doc('data').set({
+            'name': name,
+            'photo': '',
+          });
+      }
+    } on FirebaseAuthException catch (e) {
+      print (e.message!);
     }
 
     return false;

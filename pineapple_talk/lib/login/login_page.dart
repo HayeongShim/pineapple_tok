@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pineapple_talk/main/main_page.dart';
 import 'package:pineapple_talk/login/account.dart';
+import 'package:pineapple_talk/login/signup_page.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -103,7 +104,7 @@ class LoginFormState extends State<LoginForm> {
                 },
                 decoration: InputDecoration(
                   filled: false,
-                  labelText: 'Username',
+                  labelText: 'Email',
                 ),
               ),
               SizedBox(height: 12.0),
@@ -140,13 +141,17 @@ class LoginFormState extends State<LoginForm> {
                         ),
                         minimumSize: Size(double.infinity, 50),
                       ),
-                      child: Text('LOG IN'),
+                      child: Text('로그인'),
                     ),
                   ),
                   SizedBox(width: 12.0),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SignUpPage()),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
@@ -154,7 +159,7 @@ class LoginFormState extends State<LoginForm> {
                         ),
                         minimumSize: Size(double.infinity, 50),
                       ),
-                      child: Text('SIGN UP'),
+                      child: Text('회원가입'),
                     ),
                   ),
                 ]
